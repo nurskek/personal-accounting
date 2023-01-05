@@ -1,32 +1,36 @@
-import ExpenseItem from "./ExpenseItem";
-import './ExpenseList.css';
+import React, { useState } from "react";
+import "./ExpenseList.css";
 import Card from "../UI/Card";
+import ExpensesFilter from "./ExpensesFilter";
+import ExpenseListView from "./ExpenseListView";
+import ExpensesChart from "./ExpensesChart";
 
 function ExpenseList(props) {
-  const expenses = props.data; // old expenses list
+  const [year, setYear] = useState("2023");
+  // let result = props.data.filter(items => items.date.getFullYear() === parseInt(year));
+  // const expenses = props.data; // old expenses list
+  const yearChangeHandler = (data) => {
+    setYear(data);
+    // result = props.data.filter(items => items.date.getFullYear() == year);
+  };
+
+  const filteredResult = props.data.filter((expense) => {
+    return expense.date.getFullYear() === parseInt(year);
+  });
+
   return (
-    <Card className="expenses">
-      <ExpenseItem
-        name={expenses[0].title}
-        price={expenses[0].amount}
-        date={expenses[0].date}
-      ></ExpenseItem>
-      <ExpenseItem
-        name={expenses[1].title}
-        price={expenses[1].amount}
-        date={expenses[1].date}
-      ></ExpenseItem>
-      <ExpenseItem
-        name={expenses[2].title}
-        price={expenses[2].amount}
-        date={expenses[2].date}
-      ></ExpenseItem>
-      <ExpenseItem
-        name={expenses[3].title}
-        price={expenses[3].amount}
-        date={expenses[3].date}
-      ></ExpenseItem>
-    </Card>
+    <div>
+      <Card className="expenses">
+        <ExpensesFilter selected={year} onYearChanged={yearChangeHandler} />
+        <ExpensesChart expenses={filteredResult} />
+        <ExpenseListView items={filteredResult}/>
+        {/* above method's alternatives:
+        1) terniray operator 
+        2) using && 
+        3) saving jsx structure in variable outer return statement
+        */}
+      </Card>
+    </div>
   );
 }
 
